@@ -1,19 +1,15 @@
-import { Sprite } from "kontra";
+import { Sprite, TileEngine } from "kontra";
 
 import { Direction } from "./config";
+import { TILE_SIZE, MOVE_SPEED } from "./constants";
 
-export interface Player extends Sprite {
-  context: CanvasRenderingContext2D;
-}
-
-const PLAYER_SIZE = 32;
-const MOVE_SPEED = 3;
-
-export const createPlayer = (context): Sprite => {
+export const createPlayer = (
+  context: CanvasRenderingContext2D,
+  map: TileEngine
+): Sprite => {
   return Sprite({
-    width: PLAYER_SIZE,
-    height: PLAYER_SIZE,
-    context: context,
+    width: TILE_SIZE,
+    height: TILE_SIZE,
 
     x: 300,
     y: 100,
@@ -22,10 +18,10 @@ export const createPlayer = (context): Sprite => {
     radius: 20,
 
     render() {
-      this.context.fillStyle = this.color;
-      this.context.beginPath();
-      this.context.arc(0, 0, this.radius, 0, 2 * Math.PI);
-      this.context.fill();
+      context.fillStyle = this.color;
+      context.beginPath();
+      context.arc(0, 0, this.radius, 0, 2 * Math.PI);
+      context.fill();
     },
 
     move(dir: Direction) {
@@ -43,6 +39,16 @@ export const createPlayer = (context): Sprite => {
           this.x -= MOVE_SPEED;
           break;
       }
+    },
+
+    checkCollision() {
+      const bounds = {
+        x: this.x,
+        y: this.y,
+        height: this.height,
+        width: this.width,
+      };
+      return map.layerCollidesWith("walls", bounds);
     },
   });
 };

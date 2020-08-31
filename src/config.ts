@@ -10,4 +10,5 @@ export enum Keys {
   Down = "down",
   Left = "left",
   Right = "right",
+  Action = "space",
 }
